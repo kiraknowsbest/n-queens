@@ -67,48 +67,64 @@ window.countNRooksSolutions = function(n) {
   var solution = new Board( {n: n} );
   var solutionCount = 0;
 
-  var startRow = 0;
-  var startCol = 0;
-  var pieces = 0;
-  var lastSolution;
 
-  var search = function (row, col) {
-    for ( row; row < n; row++ ) {
-      for ( col; col < n; col++ ) {
-        if ( (solution.hasRowConflictAt(row) === 0) && (solution.hasColConflictAt(col) === 0) ) {
-          solution.togglePiece( row, col );
-          pieces++;
-          if ( pieces === n ) {
-            solutionCount++;
-            
-            // startRow = 0;
-            // startCol = 0;
-            // pieces = 0;
-          } else {
-            startCol++;
-            if ( startCol === n ) {
-              startCol = 0;
-              startRow++;
-            }
-            search( startRow, startCol );
-          }
-        } else {
-          startCol++;
-          if ( startCol === n ) {
-            startCol = 0;
-            startRow++;
-          }
-          search( startRow, startCol );
+  //helper function iterates over a row and toggles pieces to run checks
+  var rowIncrementChecker = function ( rowIndex ) {
+    var currentRow = solution.attributes[rowIndex];
+    for ( var i = 0; i < currentRow.length; i++ ) {
+      if ( currentRow[i] === 1 ) { // piece exists
+        solution.togglePiece( rowIndex, i ); // remove piece
+      } else {
+        solution.togglePiece( rowIndex, i ); // add piece
+        if ( solution.hasAnyRooksConflicts() ) {  // checks for collision
+          solution.togglePiece( rowIndex, i );  // if there's a collision, remove it
         }
       }
     }
-    startCol++;
-    if ( startCol === n ) {
-      return;
-    }
   };
 
-  search( startRow, startCol );
+  // var startRow = 0;
+  // var startCol = 0;
+  // var pieces = 0;
+  // var lastSolution;
+
+  // var search = function (row, col) {
+  //   for ( row; row < n; row++ ) {
+  //     for ( col; col < n; col++ ) {
+  //       if ( (solution.hasRowConflictAt(row) === 0) && (solution.hasColConflictAt(col) === 0) ) {
+  //         solution.togglePiece( row, col );
+  //         pieces++;
+  //         if ( pieces === n ) {
+  //           solutionCount++;
+            
+  //           // startRow = 0;
+  //           // startCol = 0;
+  //           // pieces = 0;
+  //         } else {
+  //           startCol++;
+  //           if ( startCol === n ) {
+  //             startCol = 0;
+  //             startRow++;
+  //           }
+  //           search( startRow, startCol );
+  //         }
+  //       } else {
+  //         startCol++;
+  //         if ( startCol === n ) {
+  //           startCol = 0;
+  //           startRow++;
+  //         }
+  //         search( startRow, startCol );
+  //       }
+  //     }
+  //   }
+  //   startCol++;
+  //   if ( startCol === n ) {
+  //     return;
+  //   }
+  // };
+
+  // search( startRow, startCol );
 
   console.log('Number of solutions for ' + n + ' rooks:', solutionCount);
   return solutionCount;
