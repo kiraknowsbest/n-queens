@@ -26,13 +26,12 @@ window.findNRooksSolution = function(n) {
   var search = function (row, col) {
     for ( row; row < n; row++ ) {
       for ( col; col < n; col++ ) {
-        if ( !solution.hasRowConflictAt[row] && !solution.hasColConflictAt[col] ) {
+        if ( (solution.hasRowConflictAt(row) === 0) && (solution.hasColConflictAt(col) === 0) ) {
           solution.togglePiece( row, col );
           pieces++;
           if ( pieces === n ) {
             return;
           } else {
-            console.log('hi');
             startCol++;
             if ( startCol === n ) {
               startCol = 0;
